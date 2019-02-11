@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/07 19:08:19 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/11 19:57:13 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ typedef struct		s_dir
 	struct s_dir	*next;
 }					t_dir;
 
-int					parsedir(char *path, t_dir *node);
-void				displaylist(t_dir **list);
+int					parsedir(char *path, t_dir **node);
+void				displaycontent(t_dir **start);
 
 #endif

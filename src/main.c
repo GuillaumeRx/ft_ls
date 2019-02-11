@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/07 19:15:51 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/11 19:56:56 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 int		main(int ac, char **av)
 {
-	t_dir *start = NULL;
+	t_dir *start;
+
 	(void)ac;
-	parsedir(av[1], start);
-	//displaylist(&(start->content));
+	parsedir(av[1], &start);
+	displaycontent(&start);
 	return (0);
 }

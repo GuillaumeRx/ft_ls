@@ -6,18 +6,33 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 18:49:12 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/07 19:12:54 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/11 20:28:11 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	displaylist(t_dir **content)
+void	displaycontent(t_dir **start)
 {
-	while ((*content) != NULL)
+	t_dir *tmp;
+
+	tmp = (*start)->content;
+	while (tmp != NULL)
 	{
-		printf("prout\n");
-		ft_putendl((*content)->name);
-		content = &((*content)->next);
+		ft_putendl(tmp->name);
+		tmp = tmp->next;
+	}
+	ft_putchar('\n');
+	tmp = (*start)->content;
+	while (tmp != NULL)
+	{
+		if (tmp->type == DT_DIR)
+		{
+			ft_putstr("./");
+			ft_putstr(tmp->name);
+			ft_putendl(":");
+			displaycontent(&tmp);
+		}
+		tmp = tmp->next;
 	}
 }
