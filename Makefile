@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/31 17:49:13 by guroux            #+#    #+#              #
-#    Updated: 2019/02/07 19:00:25 by guroux           ###   ########.fr        #
+#    Updated: 2019/02/11 22:24:22 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ NAME = ft_ls
 SRC  =	src/main.c \
 		src/read.c \
 		src/display.c	\
+		src/options.c	\
 
 OBJECT = $(SRC:.c=.o)
 

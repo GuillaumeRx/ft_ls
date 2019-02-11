@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/11 20:37:09 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/11 22:28:47 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_dir	*addnode(t_dir **head, struct dirent *dir)
 	return (node);
 }
 
-int		parsedir(char *path, t_dir **node)
+int		parsedir(char *path, t_dir **node, t_opt *opt)
 {
 	DIR				*dirp;
 	struct dirent	*dir;
@@ -60,7 +60,7 @@ int		parsedir(char *path, t_dir **node)
 		{
 			if (!(act = addnode(&(tmp->content), dir)))
 				return (0);
-			if (dir->d_type == DT_DIR)
+			if (dir->d_type == DT_DIR && opt->rec)
 			{
 				if (path[0] != '.')
 				{
@@ -70,7 +70,7 @@ int		parsedir(char *path, t_dir **node)
 				}
 				else
 					fullpath = dir->d_name;
-				if (!(parsedir(fullpath, &act)))
+				if (!(parsedir(fullpath, &act, opt)))
 					return (0);
 			}
 		}
