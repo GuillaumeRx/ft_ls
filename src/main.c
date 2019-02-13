@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/11 22:38:49 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/13 13:03:27 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int		main(int ac, char **av)
 {
-	t_dir	*start;
 	t_opt	*opt;
 	int		i;
 
@@ -34,14 +33,13 @@ int		main(int ac, char **av)
 		}
 		while (i < ac)
 		{
-			parsedir(av[i], &start, opt);
+			parsedir(av[i], opt);
 			i++;
 		}
-		if (i != ac)
-			parsedir(".", &start, opt);
+		if (i == ac)
+			parsedir(".", opt);
 	}
 	else
-		parsedir(".", &start, opt);
-	displaycontent(&start, opt);
+		parsedir(".", opt);
 	return (0);
 }

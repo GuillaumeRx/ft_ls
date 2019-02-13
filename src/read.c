@@ -6,19 +6,19 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/11 22:28:47 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/13 13:23:24 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_dir	*addnode(t_dir **head, struct dirent *dir)
+int		addnode(t_dir **head, struct dirent *dir)
 {
 	t_dir *last;
 	t_dir *node;
 
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
-		return (NULL);
+		return (0);
 	last = (*head);
 	node->name = dir->d_name;
 	node->type = dir->d_type;
@@ -31,50 +31,45 @@ t_dir	*addnode(t_dir **head, struct dirent *dir)
 			last = last->next;
 		last->next = node;
 	}
-	return (node);
+	return (1);
 }
 
-int		parsedir(char *path, t_dir **node, t_opt *opt)
+int		parsedir(char *path, t_opt *opt)
 {
 	DIR				*dirp;
 	struct dirent	*dir;
+	t_dir			*start;
 	t_dir			*tmp;
-	t_dir			*act;
 	char			*fullpath;
 
-	if (*node == NULL)
-	{
-		tmp = (t_dir *)malloc(sizeof(*tmp));
-		tmp->name = path;
-		tmp->next = NULL;
-	}
-	else
-		tmp = *node;
-	tmp->content = NULL;
+	start = NULL;
 	if (!(dirp = opendir(path)))
 		return (0);
 	while ((dir = readdir(dirp)) != NULL)
 	{
-		if (ft_strcmp(dir->d_name, ".") != 0
-		&& ft_strcmp(dir->d_name, "..") != 0 && dir->d_name[0] != '.')
-		{
-			if (!(act = addnode(&(tmp->content), dir)))
+		if (dir->d_name[0] != '.' || opt->all)
+			if (!(addnode(&start, dir)))
 				return (0);
-			if (dir->d_type == DT_DIR && opt->rec)
-			{
-				if (path[0] != '.')
-				{
-					fullpath = ft_strjoin(path, "/");
-					fullpath = ft_strjoin(fullpath, dir->d_name);
-					act->name = fullpath;
-				}
-				else
-					fullpath = dir->d_name;
-				if (!(parsedir(fullpath, &act, opt)))
-					return (0);
-			}
-		}
 	}
-	(*node) = tmp;
+	displaycontent(&start);
+	tmp = start;
+	while (tmp != NULL && opt->rec)
+	{
+		if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
+		{
+			if (ft_strcmp(tmp->name, ".") != 0)
+			{
+				fullpath = ft_strjoin(path, "/");
+				fullpath = ft_strjoin(fullpath, tmp->name);
+			}
+			else
+				fullpath = tmp->name;
+			ft_putstr(fullpath);
+			ft_putendl(" :");
+			if (!(parsedir(fullpath, opt)))
+				return (0);
+		}
+		tmp = tmp->next;
+	}
 	return (1);
 }
