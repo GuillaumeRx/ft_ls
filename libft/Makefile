@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/11/08 15:00:56 by guroux            #+#    #+#              #
-#    Updated: 2018/12/21 20:39:49 by guroux           ###   ########.fr        #
+#    Updated: 2019/02/13 16:14:29 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,23 +90,23 @@ BLUE = \033[1;34m
 RED = \033[0;31m
 YELLOW = \033[1;33m
 
-OKGREEN = $(YELLOW)\t===== $(GREEN)[OK]$(WHITE)
-KORED = $(YELLOW)\t===== $(RED)[error]$(WHITE)
+OKGREEN = $(YELLOW) $(GREEN)[OK]$(WHITE)
+KORED = $(YELLOW) $(RED)[error]$(WHITE)
 
 $(NAME): $(SRC) $(HEADERS) Makefile
-	@$(CC) -c $(FLAGS) -I$(HEADERS) $(SRC) && echo "- $(BLUE)Compilation$(OKGREEN)" || (echo "- $(BLUE)Compile$(KORED)" && false)
-	@ar rc $(NAME) $(OBJECT) && echo "- $(BLUE)Create lib$(OKGREEN)" || (echo "- $(BLUE)Create lib$(KORED)" && false)
-	@ranlib $(NAME) && echo "- $(BLUE)Index lib$(OKGREEN)" || (echo "- $(BLUE)Index lib$(KORED)" && false)
+	@$(CC) -c $(FLAGS) -I$(HEADERS) $(SRC) && echo "$(BLUE)Libft$(OKGREEN)" || (echo "$(BLUE)Libft$(KORED)" && false)
+	@ar rc $(NAME) $(OBJECT) && echo "$(BLUE)Create lib$(OKGREEN)" || (echo "$(BLUE)Create lib$(KORED)" && false)
+	@ranlib $(NAME) && echo "$(BLUE)Index lib$(OKGREEN)" || (echo "$(BLUE)Index lib$(KORED)" && false)
 
 all: $(NAME)
 
 clean:
 	@rm -rf $(OBJECT)
-	@echo "- $(BLUE)Delete object$(OKGREEN)"
+	@echo "$(BLUE)Delete object$(OKGREEN)"
 
 fclean: clean
 	@rm -rf $(NAME)
-	@echo "- $(BLUE)Delete lib$(OKGREEN)"
+	@echo "$(BLUE)Delete lib$(OKGREEN)"
 
 count:
 	@printf "$(GREEN)"

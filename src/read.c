@@ -6,22 +6,29 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/13 13:23:24 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/13 19:54:42 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int		addnode(t_dir **head, struct dirent *dir)
+int		addnode(t_dir **head, struct dirent *dir, char *path)
 {
-	t_dir *last;
-	t_dir *node;
+	t_dir 			*last;
+	t_dir 			*node;
+	struct stat		buf;
+	char			*filepath;
 
+	filepath = ft_strjoin(path, "/");
+	filepath = ft_strjoin(filepath, dir->d_name);
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
+		return (0);
+	if ((lstat(filepath, &buf)) < 0)
 		return (0);
 	last = (*head);
 	node->name = dir->d_name;
 	node->type = dir->d_type;
+	node->rawtime = buf.st_mtime;
 	node->next = NULL;
 	if ((*head) == NULL)
 		(*head) = node;
@@ -48,9 +55,10 @@ int		parsedir(char *path, t_opt *opt)
 	while ((dir = readdir(dirp)) != NULL)
 	{
 		if (dir->d_name[0] != '.' || opt->all)
-			if (!(addnode(&start, dir)))
+			if (!(addnode(&start, dir, path)))
 				return (0);
 	}
+	sortlist(&start, opt);
 	displaycontent(&start);
 	tmp = start;
 	while (tmp != NULL && opt->rec)

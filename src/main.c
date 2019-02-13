@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/13 13:03:27 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/13 19:33:16 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,26 @@ int		main(int ac, char **av)
 		{
 			if (av[i][0] == '-' && av[i][1] != '-')
 			{
-				setopt(av[i], opt);
-				i++;
+				if (setopt(av[i], opt))
+					i++;
+				else
+				{
+					ft_putendl("Illegal option");
+					return (0);
+				}
 			}
 			else
 				break ;
 		}
 		while (i < ac)
 		{
-			parsedir(av[i], opt);
+			printf("Return : %d\n", parsedir(av[i], opt));
 			i++;
 		}
 		if (i == ac)
-			parsedir(".", opt);
+			printf("Return : %d\n", parsedir(".", opt));
 	}
 	else
-		parsedir(".", opt);
-	return (0);
+		printf("Return : %d\n", parsedir(".", opt));
+	return (1);
 }
