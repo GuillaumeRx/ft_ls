@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/13 19:54:18 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/15 15:57:02 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,6 @@ int					parsedir(char *path, t_opt *opt);
 void				displaycontent(t_dir **start);
 int					setopt(char *entry, t_opt *opt);
 void				sortlist(t_dir **start, t_opt *opt);
+void				freelist(t_dir **node);
 
 #endif

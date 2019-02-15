@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/31 17:49:13 by guroux            #+#    #+#              #
-#    Updated: 2019/02/13 19:26:52 by guroux           ###   ########.fr        #
+#    Updated: 2019/02/15 16:15:20 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ SRC  =	src/main.c \
 		src/read.c \
 		src/display.c	\
 		src/options.c	\
-		src/sort.c
+		src/sort.c		\
+		src/list.c
 
 OBJECT = $(SRC:.c=.o)
 
@@ -40,7 +41,7 @@ OKGREEN = $(YELLOW) $(GREEN)[OK]$(WHITE)
 KORED = $(YELLOW) $(RED)[error]$(WHITE)
 
 
-$(NAME): logo $(LIB) $(OBJECT)
+$(NAME): logo sign $(LIB) $(OBJECT)
 	@$(CC) $(FLAGS) -o $(NAME) $(OBJECT) -L libft/ -lft && echo "$(BLUE)Compilation$(OKGREEN)" || (echo "$(BLUE)Compilation$(KORED)" && false)
 
 $(LIB):
@@ -52,28 +53,23 @@ all: $(NAME)
 		@$(CC) $(FLAGS) -I $(HEADERS) -I libft/includes $< -c -o $@ && echo "$(BLUE)Objects$(OKGREEN)" || (echo "$(BLUE)Objects$(KORED)" && false)
 
 logo:
-	@echo "$(YELLOW)          _____  $(BLUE)              _____    $(RED)                        _____     $(GREEN)       _____          "
-	@echo "$(YELLOW)         /\    \ $(BLUE)             /\    \    $(RED)                      /\    \   $(GREEN)       /\    \         "
-	@echo "$(YELLOW)        /::\    \ $(BLUE)           /::\    \   $(RED)                     /::\____\  $(GREEN)      /::\    \        "
-	@echo "$(YELLOW)       /::::\    \  $(BLUE)         \:::\    \   $(RED)                   /:::/    /  $(GREEN)     /::::\    \       "
-	@echo "$(YELLOW)      /::::::\    \   $(BLUE)        \:::\    \  $(RED)                  /:::/    /   $(GREEN)    /::::::\    \      "
-	@echo "$(YELLOW)     /:::/\:::\    \   $(BLUE)        \:::\    \  $(RED)                /:::/    /   $(GREEN)    /:::/\:::\    \     "
-	@echo "$(YELLOW)    /:::/__\:::\    \  $(BLUE)         \:::\    \  $(RED)              /:::/    /    $(GREEN)   /:::/__\:::\    \    "
-	@echo "$(YELLOW)   /::::\   \:::\    \   $(BLUE)       /::::\    \  $(RED)            /:::/    /     $(GREEN)   \:::\   \:::\    \   "
-	@echo "$(YELLOW)  /::::::\   \:::\    \  $(BLUE)      /::::::\    \   $(RED)         /:::/    /     $(GREEN)  ___\:::\   \:::\    \  "
-	@echo "$(YELLOW) /:::/\:::\   \:::\    \  $(BLUE)    /:::/\:::\    \   $(RED)       /:::/    /     $(GREEN)  /\   \:::\   \:::\    \ "
-	@echo "$(YELLOW)/:::/  \:::\   \:::\____\  $(BLUE)  /:::/  \:::\____\  $(RED)      /:::/____/     $(GREEN)  /::\   \:::\   \:::\____\\"
-	@echo "$(YELLOW)\::/    \:::\   \::/    /  $(BLUE) /:::/    \::/    /  $(RED)      \:::\    \    $(GREEN)   \:::\   \:::\   \::/    /"
-	@echo "$(YELLOW) \/____/ \:::\   \/____/ $(BLUE)  /:::/    / \/____/   $(RED)       \:::\    \   $(GREEN)    \:::\   \:::\   \/____/ "
-	@echo "$(YELLOW)          \:::\    \   $(BLUE)   /:::/    /            $(RED)        \:::\    \  $(GREEN)     \:::\   \:::\    \     "
-	@echo "$(YELLOW)           \:::\____\  $(BLUE)  /:::/    /            $(RED)          \:::\    \  $(GREEN)     \:::\   \:::\____\    "
-	@echo "$(YELLOW)            \::/    /  $(BLUE)  \::/    /            $(RED)            \:::\    \  $(GREEN)     \:::\  /:::/    /    "
-	@echo "$(YELLOW)             \/____/   $(BLUE)   \/____/            $(RED)              \:::\    \   $(GREEN)    \:::\/:::/    /     "
-	@echo "$(YELLOW)                       $(BLUE)                      $(RED)               \:::\    \  $(GREEN)     \::::::/    /      "
-	@echo "$(YELLOW)                       $(BLUE)                      $(RED)                \:::\____\  $(GREEN)     \::::/    /       "
-	@echo "$(YELLOW)                       $(BLUE)                      $(RED)                 \::/    /   $(GREEN)     \::/    /        "
-	@echo "$(YELLOW)                       $(BLUE)                      $(RED)                  \/____/    $(GREEN)      \/____/         "
-	@echo "$(YELLOW)                       $(BLUE)                      $(RED)                            $(GREEN)                       "
+	@echo
+	@echo "                 $(GREEN)███████╗████████╗    ██╗     ███████╗"
+	@echo "                 ██╔════╝╚══██╔══╝    ██║     ██╔════╝"
+	@echo "                 █████╗     ██║       ██║     ███████╗"
+	@echo "                 ██╔══╝     ██║       ██║     ╚════██║"
+	@echo "                 ██║        ██║       ███████╗███████║"
+	@echo "                 ╚═╝        ╚═╝       ╚══════╝╚══════╝"
+	@echo
+
+sign:
+	@echo "██████╗ ██╗   ██╗     ██████╗ ██╗   ██╗██████╗  ██████╗ ██╗   ██╗██╗  ██╗"
+	@echo "██╔══██╗╚██╗ ██╔╝    ██╔════╝ ██║   ██║██╔══██╗██╔═══██╗██║   ██║╚██╗██╔╝"
+	@echo "██████╔╝ ╚████╔╝     ██║  ███╗██║   ██║██████╔╝██║   ██║██║   ██║ ╚███╔╝ "
+	@echo "██╔══██╗  ╚██╔╝      ██║   ██║██║   ██║██╔══██╗██║   ██║██║   ██║ ██╔██╗ "
+	@echo "██████╔╝   ██║       ╚██████╔╝╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██╔╝ ██╗"
+	@echo "╚═════╝    ╚═╝        ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝"
+	@echo
 	@echo "$(BLUE)Compilation...\n"
 
 clean:

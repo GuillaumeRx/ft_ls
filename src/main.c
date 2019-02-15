@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/13 19:33:16 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/15 16:50:19 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,6 @@ int		main(int ac, char **av)
 	}
 	else
 		printf("Return : %d\n", parsedir(".", opt));
+	free(opt);
 	return (1);
 }

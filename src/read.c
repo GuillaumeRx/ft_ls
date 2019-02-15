@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/13 19:54:42 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/15 15:57:29 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,6 @@ int		parsedir(char *path, t_opt *opt)
 		}
 		tmp = tmp->next;
 	}
+	freelist(&start);
 	return (1);
 }
