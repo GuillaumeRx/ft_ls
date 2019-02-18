@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/15 15:57:02 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/18 19:45:34 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <pwd.h>
+# include <grp.h>
 # include <uuid/uuid.h>
 # include <sys/xattr.h>
 # include <time.h>
@@ -28,6 +29,11 @@ typedef struct		s_dir
 {
 	char			*name;
 	unsigned int	type;
+	mode_t			mode;
+	nlink_t			n_link;
+	char			*ownername;
+	char			*groupname;
+	off_t			size;
 	time_t			rawtime;
 	struct s_dir	*next;
 }					t_dir;

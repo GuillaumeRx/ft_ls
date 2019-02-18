@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/15 15:57:29 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/18 19:49:08 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 	t_dir 			*last;
 	t_dir 			*node;
 	struct stat		buf;
+	struct passwd	*pwd;
+	struct group	*grp;
 	char			*filepath;
 
 	filepath = ft_strjoin(path, "/");
@@ -26,9 +28,18 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 	if ((lstat(filepath, &buf)) < 0)
 		return (0);
 	last = (*head);
+	if (!(pwd = getpwuid(buf.st_uid)))
+		return (0);
 	node->name = dir->d_name;
 	node->type = dir->d_type;
 	node->rawtime = buf.st_mtime;
+	node->ownername = pwd->pw_name;
+	if (!(grp = getgrgid(pwd->pw_gid)))
+		return (0);
+	node->groupname = grp->gr_name;
+	node->mode = buf.st_mode;
+	node->n_link = buf.st_nlink;
+	node->size = buf.st_size;
 	node->next = NULL;
 	if ((*head) == NULL)
 		(*head) = node;
