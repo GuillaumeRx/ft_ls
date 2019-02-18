@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 18:09:57 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/18 15:13:41 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/18 15:17:13 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		alpha(t_dir *node, t_opt *opt)
 
 int		lastmod(t_dir *node, t_opt *opt)
 {
-	if (opt->rev)
+	if (opt->rev == 1)
 	{
 		if (node->rawtime > node->next->rawtime)
 			return (1);
