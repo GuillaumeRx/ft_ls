@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/18 19:49:08 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/19 16:55:31 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int		parsedir(char *path, t_opt *opt)
 				return (0);
 	}
 	sortlist(&start, opt);
-	displaycontent(&start);
+	displaycontent(&start, opt);
 	tmp = start;
 	while (tmp != NULL && opt->rec)
 	{
