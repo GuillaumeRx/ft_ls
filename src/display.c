@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 18:49:12 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/19 17:19:12 by guroux           ###   ########.fr       */
+/*   Updated: 2019/02/22 18:03:34 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,23 @@ void	printdate(time_t rawtime)
 {
 	time_t		now;
 	char		*timestr;
+	char		*dyear;
+	char		*dnbr;
+	char		*dmonth;
+	char		*dtime;
 
 	now = time(NULL);
 	timestr = ctime(&rawtime);
-	timestr = ft_strsub(timestr, 4, 12);
-	ft_putstr(timestr);
+
+	//ft_putstr(timestr);
+	ft_putstr(dnbr = ft_strsub(timestr, 8, 2));
+	ft_putchar(' ');
+	ft_putstr(dmonth = ft_strsub(timestr, 4, 3));
+	ft_putchar(' ');
+	if ((now - rawtime) > 15780000)
+		ft_putstr(dyear = ft_strsub(timestr, 19, 5));
+	else
+		ft_putstr(dtime = ft_strsub(timestr, 11, 5));
 
 }
 
