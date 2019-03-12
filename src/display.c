@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 18:49:12 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/22 18:03:34 by guroux           ###   ########.fr       */
+/*   Updated: 2019/03/12 18:03:06 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ void	printdate(time_t rawtime)
 	timestr = ctime(&rawtime);
 
 	//ft_putstr(timestr);
-	ft_putstr(dnbr = ft_strsub(timestr, 8, 2));
-	ft_putchar(' ');
 	ft_putstr(dmonth = ft_strsub(timestr, 4, 3));
+	ft_putchar(' ');
+	ft_putstr(dnbr = ft_strsub(timestr, 8, 2));
 	ft_putchar(' ');
 	if ((now - rawtime) > 15780000)
 		ft_putstr(dyear = ft_strsub(timestr, 19, 5));
@@ -112,6 +112,50 @@ void	printsize(t_dir **start, off_t size)
 	ft_putnbr(size);
 }
 
+void	printowner(t_dir **start, char *owner)
+{
+	t_dir		*tmp;
+	size_t		longer;
+
+	tmp = *start;
+	longer = 0;
+	while (tmp != NULL)
+	{
+		if (longer < ft_strlen(tmp->ownername))
+			longer = ft_strlen(tmp->ownername);
+		tmp = tmp->next;
+	}
+	ft_putchar(' ');
+	ft_putstr(owner);
+	while (longer - ft_strlen(owner) != 0)
+	{
+		ft_putchar(' ');
+		longer--;
+	}
+}
+
+void	printgroup(t_dir **start, char *group)
+{
+	t_dir		*tmp;
+	size_t		longer;
+
+	tmp = *start;
+	longer = 0;
+	while (tmp != NULL)
+	{
+		if (longer < (ft_strlen(tmp->groupname) - 1))
+			longer = ft_strlen(tmp->groupname) - 1;
+		tmp = tmp->next;
+	}
+	ft_putchar(' ');
+	ft_putstr(group);
+	while (longer - (ft_strlen(group) - 1) != 0)
+	{
+		ft_putchar(' ');
+		longer--;
+	}
+}
+
 void	displaylong(t_dir **start)
 {
 	t_dir *tmp;
@@ -122,11 +166,9 @@ void	displaylong(t_dir **start)
 		parsemode(tmp->mode);
 		parseownerright(tmp->mode);
 		printlink(start, tmp->n_link);
+		printowner(start, tmp->ownername);
 		ft_putchar(' ');
-		ft_putstr(tmp->ownername);
-		ft_putchar(' ');
-		ft_putchar(' ');
-		ft_putstr(tmp->groupname);
+		printgroup(start, tmp->groupname);
 		printsize(start, tmp->size);
 		ft_putchar(' ');
 		printdate(tmp->rawtime);
