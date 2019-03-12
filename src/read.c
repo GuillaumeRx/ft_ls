@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/02/19 16:55:31 by guroux           ###   ########.fr       */
+/*   Updated: 2019/03/12 17:42:02 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,27 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 	return (1);
 }
 
+char	*editpath(char *actual, char *next)
+{
+	char *tmp;
+	char *buf;
+
+	if (actual[ft_strlen(actual) - 1] != '/')
+	{
+		if (!(tmp = ft_strjoin(actual, "/")))
+			return (NULL);
+		if (!(buf = ft_strjoin(tmp, next)))
+			return (NULL);
+		free(tmp);
+	}
+	else
+	{
+		if (!(buf = ft_strjoin(actual, next)))
+			return (NULL);
+	}
+	return (buf);
+}
+
 int		parsedir(char *path, t_opt *opt)
 {
 	DIR				*dirp;
@@ -61,6 +82,7 @@ int		parsedir(char *path, t_opt *opt)
 	char			*fullpath;
 
 	start = NULL;
+	fullpath = ft_strdup("");
 	if (!(dirp = opendir(path)))
 		return (0);
 	while ((dir = readdir(dirp)) != NULL)
@@ -77,10 +99,7 @@ int		parsedir(char *path, t_opt *opt)
 		if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
 		{
 			if (ft_strcmp(tmp->name, ".") != 0)
-			{
-				fullpath = ft_strjoin(path, "/");
-				fullpath = ft_strjoin(fullpath, tmp->name);
-			}
+				fullpath = editpath(path, tmp->name);
 			else
 				fullpath = tmp->name;
 			ft_putstr(fullpath);
