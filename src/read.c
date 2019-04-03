@@ -12,6 +12,49 @@
 
 #include "ft_ls.h"
 
+int		checkdir(char *path)
+{
+	struct stat		buf;
+	if ((lstat(path, &buf)) < 0)
+		return (0);
+	if (S_ISLNK(buf.st_mode))
+		return (1);
+	return (0);
+}
+
+int		getdir(t_dir **head, char *path)
+{
+
+	struct stat		buf;
+	struct passwd	*pwd;
+	struct group	*grp;
+	t_dir			*node;
+	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
+		return (0);
+	if ((lstat(path, &buf)) < 0)
+		return (0);
+	if (!(pwd = getpwuid(buf.st_uid)))
+		return (0);
+	node->name = path;
+	node->rawtime = buf.st_mtime;
+	node->ownername = pwd->pw_name;
+	if (!(grp = getgrgid(pwd->pw_gid)))
+		return (0);
+	node->groupname = grp->gr_name;
+	node->mode = buf.st_mode;
+	node->n_link = buf.st_nlink;
+	node->size = buf.st_size;
+	node->blocks = buf.st_blocks;
+	if (S_ISLNK(buf.st_mode))
+	{
+		node->rpath = (char *)malloc(sizeof(char) * 100);
+		node->rpath[readlink(path, node->rpath, 99)] = '\0';
+	}
+	node->next = NULL;
+	(*head) = node;
+	return (1);
+}
+
 int		addnode(t_dir **head, struct dirent *dir, char *path)
 {
 	t_dir 			*last;
@@ -40,6 +83,12 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 	node->mode = buf.st_mode;
 	node->n_link = buf.st_nlink;
 	node->size = buf.st_size;
+	node->blocks = buf.st_blocks;
+	if (S_ISLNK(buf.st_mode))
+	{
+		node->rpath = (char *)malloc(sizeof(char) * 100);
+		node->rpath[readlink(filepath, node->rpath, 99)] = '\0';
+	}
 	node->next = NULL;
 	if ((*head) == NULL)
 		(*head) = node;
@@ -81,33 +130,43 @@ int		parsedir(char *path, t_opt *opt)
 	t_dir			*tmp;
 	char			*fullpath;
 
+	dir = NULL;
 	start = NULL;
 	fullpath = ft_strdup("");
-	if (!(dirp = opendir(path)))
-		return (0);
-	while ((dir = readdir(dirp)) != NULL)
+	if (checkdir(path) && opt->lst == 1)
 	{
-		if (dir->d_name[0] != '.' || opt->all)
-			if (!(addnode(&start, dir, path)))
-				return (0);
+		getdir(&start, path);
+		displaycontent(&start, opt);
 	}
-	sortlist(&start, opt);
-	displaycontent(&start, opt);
-	tmp = start;
-	while (tmp != NULL && opt->rec)
+	else
 	{
-		if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
+		if (!(dirp = opendir(path)))
+			return (0);
+		while ((dir = readdir(dirp)) != NULL)
 		{
-			if (ft_strcmp(tmp->name, ".") != 0)
-				fullpath = editpath(path, tmp->name);
-			else
-				fullpath = tmp->name;
-			ft_putstr(fullpath);
-			ft_putendl(" :");
-			if (!(parsedir(fullpath, opt)))
-				return (0);
+			if (dir->d_name[0] != '.' || opt->all)
+				if (!(addnode(&start, dir, path)))
+					return (0);
 		}
-		tmp = tmp->next;
+		sortlist(&start, opt);
+		displaycontent(&start, opt);
+		tmp = start;
+		while (tmp != NULL && opt->rec == 1)
+		{
+			if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
+			{
+				if (ft_strcmp(tmp->name, ".") != 0)
+					fullpath = editpath(path, tmp->name);
+				else
+					fullpath = tmp->name;
+				ft_putchar('\n');
+				ft_putstr(fullpath);
+				ft_putendl(" :");
+				if (!(parsedir(fullpath, opt)))
+					return (0);
+			}
+			tmp = tmp->next;
+		}
 	}
 	freelist(&start);
 	return (1);

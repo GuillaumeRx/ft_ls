@@ -156,13 +156,31 @@ void	printgroup(t_dir **start, char *group)
 	}
 }
 
+void		calcblocks(t_dir **start)
+{	
+	t_dir	*tmp;
+	int		tblocks;
+
+	tmp = *start;
+	tblocks = 0;
+	while (tmp != NULL)
+	{
+		tblocks += tmp->blocks;
+		tmp = tmp->next;
+	}
+	ft_putstr("total ");
+	ft_putnbr(tblocks);
+	ft_putchar('\n');
+}
+
 void	displaylong(t_dir **start)
 {
 	t_dir *tmp;
 
 	tmp = *start;
+	calcblocks(start);
 	while (tmp != NULL)
-	{
+	{	
 		parsemode(tmp->mode);
 		parseownerright(tmp->mode);
 		printlink(start, tmp->n_link);
@@ -173,7 +191,13 @@ void	displaylong(t_dir **start)
 		ft_putchar(' ');
 		printdate(tmp->rawtime);
 		ft_putchar(' ');
-		ft_putendl(tmp->name);
+		ft_putstr(tmp->name);
+		if (S_ISLNK(tmp->mode))
+		{
+			ft_putstr(" -> ");
+			ft_putstr(tmp->rpath);
+		}
+		ft_putchar('\n');
 		tmp = tmp->next;
 	}
 }
@@ -187,11 +211,10 @@ void	displaycontent(t_dir **start, t_opt *opt)
 		displaylong(start);
 	else
 	{
-	while (tmp != NULL)
-		{
-			ft_putendl(tmp->name);
-			tmp = tmp->next;
-		}
+		while (tmp != NULL)
+			{
+				ft_putendl(tmp->name);
+				tmp = tmp->next;
+			}
 	}
-	ft_putchar('\n');
 }

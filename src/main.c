@@ -38,7 +38,7 @@ int		main(int ac, char **av)
 		}
 		while (i < ac)
 		{
-			printf("Return : %d\n", parsedir(av[i], opt));
+	printf("Return : %d\n", parsedir(av[i], opt));
 			i++;
 		}
 	}

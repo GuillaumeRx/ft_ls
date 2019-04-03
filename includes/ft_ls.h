@@ -28,6 +28,7 @@
 typedef struct		s_dir
 {
 	char			*name;
+	char			*rpath;
 	unsigned int	type;
 	mode_t			mode;
 	nlink_t			n_link;
@@ -35,6 +36,7 @@ typedef struct		s_dir
 	char			*groupname;
 	off_t			size;
 	time_t			rawtime;
+	quad_t			blocks;
 	struct s_dir	*next;
 }					t_dir;
 
