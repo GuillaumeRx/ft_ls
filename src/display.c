@@ -34,14 +34,34 @@ void	parseownerright(mode_t mode)
 {
 	ft_putchar((mode & S_IRUSR) ? 'r' : '-');
 	ft_putchar((mode & S_IWUSR) ? 'w' : '-');
-	ft_putchar((mode & S_IXUSR) ? 'x' : '-');
+	if (!(mode & S_IXUSR) && (mode & S_ISUID))
+		ft_putchar('S');
+	else if ((mode & S_IXUSR) && (mode & S_ISUID))
+		ft_putchar('s');
+	else if (mode & S_IXUSR)
+		ft_putchar('x');
+	else
+		ft_putchar('-');
 	ft_putchar((mode & S_IRGRP) ? 'r' : '-');
 	ft_putchar((mode & S_IWGRP) ? 'w' : '-');
-	ft_putchar((mode & S_IXGRP) ? 'x' : '-');
+	if (!(mode & S_IXGRP) && (mode & S_ISGID))
+		ft_putchar('S');
+	else if ((mode & S_IXGRP) && (mode & S_ISGID))
+		ft_putchar('s');
+	else if (mode & S_IXGRP)
+		ft_putchar('x');
+	else
+		ft_putchar('-');
 	ft_putchar((mode & S_IROTH) ? 'r' : '-');
 	ft_putchar((mode & S_IWOTH) ? 'w' : '-');
-	ft_putchar((mode & S_IXOTH) ? 'x' : '-');
-
+	if (S_ISDIR(mode) && !(mode & S_IXUSR) && !(mode & S_IXGRP) && (mode & S_ISVTX))
+		ft_putchar('T');
+	else if (S_ISDIR(mode) && (mode & S_IXUSR) && (mode & S_IXGRP) && (mode & S_ISVTX))
+		ft_putchar('t');
+	else if (mode & S_IXOTH)
+		ft_putchar('x');
+	else
+		ft_putchar('-');
 }
 
 void	printdate(time_t rawtime)

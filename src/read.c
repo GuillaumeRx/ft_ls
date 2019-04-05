@@ -12,6 +12,11 @@
 
 #include "ft_ls.h"
 
+int		checkperm(t_dir *node)
+{
+	return (((node->mode & S_IRUSR) || (node->mode & S_IRGRP)) ? 1 : 0);
+}
+
 int		checkdir(char *path)
 {
 	struct stat		buf;
@@ -20,6 +25,27 @@ int		checkdir(char *path)
 	if (S_ISLNK(buf.st_mode))
 		return (1);
 	return (0);
+}
+
+char	*editpath(char *actual, char *next)
+{
+	char *tmp;
+	char *buf;
+
+	if (actual[ft_strlen(actual) - 1] != '/')
+	{
+		if (!(tmp = ft_strjoin(actual, "/")))
+			return (NULL);
+		if (!(buf = ft_strjoin(tmp, next)))
+			return (NULL);
+		free(tmp);
+	}
+	else
+	{
+		if (!(buf = ft_strjoin(actual, next)))
+			return (NULL);
+	}
+	return (buf);
 }
 
 int		getdir(t_dir **head, char *path)
@@ -64,20 +90,20 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 	struct group	*grp;
 	char			*filepath;
 
-	filepath = ft_strjoin(path, "/");
-	filepath = ft_strjoin(filepath, dir->d_name);
+	filepath = editpath(path, dir->d_name);
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
 		return (0);
 	if ((lstat(filepath, &buf)) < 0)
 		return (0);
 	last = (*head);
 	if (!(pwd = getpwuid(buf.st_uid)))
-		return (0);
+		node->ownername = ft_itoa(buf.st_uid);
+	else
+		node->ownername = pwd->pw_name;
 	node->name = dir->d_name;
 	node->type = dir->d_type;
 	node->rawtime = buf.st_mtime;
-	node->ownername = pwd->pw_name;
-	if (!(grp = getgrgid(pwd->pw_gid)))
+	if (!(grp = getgrgid(buf.st_gid)))
 		return (0);
 	node->groupname = grp->gr_name;
 	node->mode = buf.st_mode;
@@ -99,27 +125,6 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 		last->next = node;
 	}
 	return (1);
-}
-
-char	*editpath(char *actual, char *next)
-{
-	char *tmp;
-	char *buf;
-
-	if (actual[ft_strlen(actual) - 1] != '/')
-	{
-		if (!(tmp = ft_strjoin(actual, "/")))
-			return (NULL);
-		if (!(buf = ft_strjoin(tmp, next)))
-			return (NULL);
-		free(tmp);
-	}
-	else
-	{
-		if (!(buf = ft_strjoin(actual, next)))
-			return (NULL);
-	}
-	return (buf);
 }
 
 int		parsedir(char *path, t_opt *opt)
@@ -153,7 +158,7 @@ int		parsedir(char *path, t_opt *opt)
 		tmp = start;
 		while (tmp != NULL && opt->rec == 1)
 		{
-			if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
+			if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0) && checkperm(tmp))
 			{
 				if (ft_strcmp(tmp->name, ".") != 0)
 					fullpath = editpath(path, tmp->name);

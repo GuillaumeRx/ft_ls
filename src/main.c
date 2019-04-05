@@ -38,12 +38,12 @@ int		main(int ac, char **av)
 		}
 		while (i < ac)
 		{
-	printf("Return : %d\n", parsedir(av[i], opt));
+			parsedir(av[i], opt);
 			i++;
 		}
 	}
 	else
-		printf("Return : %d\n", parsedir(".", opt));
+		parsedir(".", opt);
 	free(opt);
 	return (1);
 }
