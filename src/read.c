@@ -12,14 +12,10 @@
 
 #include "ft_ls.h"
 
-int		checkperm(t_dir *node)
-{
-	return (((node->mode & S_IRUSR) || (node->mode & S_IRGRP)) ? 1 : 0);
-}
-
 int		checkdir(char *path)
 {
 	struct stat		buf;
+
 	if ((lstat(path, &buf)) < 0)
 		return (0);
 	if (S_ISLNK(buf.st_mode))
@@ -58,7 +54,10 @@ int		getdir(t_dir **head, char *path)
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
 		return (0);
 	if ((lstat(path, &buf)) < 0)
+	{
+		perror(ft_strjoin("ft_ls: ", path));
 		return (0);
+	}
 	if (!(pwd = getpwuid(buf.st_uid)))
 		return (0);
 	node->name = path;
@@ -94,7 +93,10 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
 		return (0);
 	if ((lstat(filepath, &buf)) < 0)
+	{
+		perror(ft_strjoin("ft_ls: ", path));
 		return (0);
+	}
 	last = (*head);
 	if (!(pwd = getpwuid(buf.st_uid)))
 		node->ownername = ft_itoa(buf.st_uid);
@@ -146,33 +148,43 @@ int		parsedir(char *path, t_opt *opt)
 	else
 	{
 		if (!(dirp = opendir(path)))
+		{
+			perror(ft_strjoin("ft_ls: ", path));
 			return (0);
+		}
 		while ((dir = readdir(dirp)) != NULL)
 		{
 			if (dir->d_name[0] != '.' || opt->all)
 				if (!(addnode(&start, dir, path)))
+				{
+					closedir(dirp);
 					return (0);
+				}
 		}
 		sortlist(&start, opt);
 		displaycontent(&start, opt);
 		tmp = start;
 		while (tmp != NULL && opt->rec == 1)
 		{
-			if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0) && checkperm(tmp))
+			if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
 			{
 				if (ft_strcmp(tmp->name, ".") != 0)
-					fullpath = editpath(path, tmp->name);
+				{
+					if (!(fullpath = editpath(path, tmp->name)))
+						return (0);
+				}
 				else
 					fullpath = tmp->name;
 				ft_putchar('\n');
 				ft_putstr(fullpath);
 				ft_putendl(" :");
-				if (!(parsedir(fullpath, opt)))
-					return (0);
+				parsedir(fullpath, opt);
 			}
 			tmp = tmp->next;
 		}
+		closedir(dirp);
 	}
+	
 	freelist(&start);
 	return (1);
 }
