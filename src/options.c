@@ -19,18 +19,11 @@ int		setopt(char *entry, t_opt *opt)
 	i = 1;
 	while (entry[i] != '\0')
 	{
-		if (entry[i] == 'R')
-			opt->rec = 1;
-		else if (entry[i] == 'l')
-			opt->lst = 1;
-		else if (entry[i] == 'a')
-			opt->all = 1;
-		else if (entry[i] == 'r')
-			opt->rev = 1;
-		else if (entry[i] == 't')
-			opt->tim = 1;
-		else
-			return (0);
+		entry[i] == 'R' ? (opt->rec = 1) : (opt->rec = 0);
+		entry[i] == 'l' ? (opt->lst = 1) : (opt->lst = 0);
+		entry[i] == 'a' ? (opt->all = 1) : (opt->all = 0);
+		entry[i] == 'r' ? (opt->rev = 1) : (opt->rev = 0);
+		entry[i] == 't' ? (opt->tim = 1) : (opt->tim = 0);
 		i++;
 	}
 	return (1);

@@ -80,24 +80,20 @@ int		getdir(t_dir **head, char *path)
 	return (1);
 }
 
-int		addnode(t_dir **head, struct dirent *dir, char *path)
+int		adddata(t_dir *node, struct dirent *dir, char *path)
 {
-	t_dir 			*last;
-	t_dir 			*node;
 	struct stat		buf;
 	struct passwd	*pwd;
 	struct group	*grp;
 	char			*filepath;
 
-	filepath = editpath(path, dir->d_name);
-	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
+	if (!(filepath = editpath(path, dir->d_name)))
 		return (0);
 	if ((lstat(filepath, &buf)) < 0)
 	{
 		perror(ft_strjoin("ft_ls: ", path));
 		return (0);
 	}
-	last = (*head);
 	if (!(pwd = getpwuid(buf.st_uid)))
 		node->ownername = ft_itoa(buf.st_uid);
 	else
@@ -118,15 +114,22 @@ int		addnode(t_dir **head, struct dirent *dir, char *path)
 		node->rpath[readlink(filepath, node->rpath, 99)] = '\0';
 	}
 	node->next = NULL;
-	if ((*head) == NULL)
-		(*head) = node;
-	else
-	{
-		while (last->next != NULL)
-			last = last->next;
-		last->next = node;
-	}
 	return (1);
+}
+
+t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
+{
+	t_dir	*node;
+
+	if (!(node = (t_dir *)malloc(sizeof(*node))))
+		return (NULL);
+	adddata(node, dir, path);
+	if (*start)
+	{
+		node->next = *start;
+		return (node);
+	}
+	return (node);
 }
 
 int		parsedir(char *path, t_opt *opt)
@@ -139,10 +142,10 @@ int		parsedir(char *path, t_opt *opt)
 
 	dir = NULL;
 	start = NULL;
-	fullpath = ft_strdup("");
 	if (checkdir(path) && opt->lst == 1)
 	{
-		getdir(&start, path);
+		if (!(getdir(&start, path)))
+			return (0);
 		displaycontent(&start, opt);
 	}
 	else
@@ -154,12 +157,14 @@ int		parsedir(char *path, t_opt *opt)
 		}
 		while ((dir = readdir(dirp)) != NULL)
 		{
-			if (dir->d_name[0] != '.' || opt->all)
-				if (!(addnode(&start, dir, path)))
+			if (dir->d_name[0] != '.' || opt->all == 1)
+			{
+				if (!(start = dolist(&start, dir, path)))
 				{
 					closedir(dirp);
 					return (0);
 				}
+			}
 		}
 		sortlist(&start, opt);
 		displaycontent(&start, opt);
@@ -168,13 +173,8 @@ int		parsedir(char *path, t_opt *opt)
 		{
 			if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0 && ft_strcmp(tmp->name, "..") != 0))
 			{
-				if (ft_strcmp(tmp->name, ".") != 0)
-				{
-					if (!(fullpath = editpath(path, tmp->name)))
-						return (0);
-				}
-				else
-					fullpath = tmp->name;
+				if (!(fullpath = editpath(path, tmp->name)))
+					return (0);
 				ft_putchar('\n');
 				ft_putstr(fullpath);
 				ft_putendl(" :");
@@ -184,7 +184,6 @@ int		parsedir(char *path, t_opt *opt)
 		}
 		closedir(dirp);
 	}
-	
 	freelist(&start);
 	return (1);
 }
