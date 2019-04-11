@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 18:49:12 by guroux            #+#    #+#             */
-/*   Updated: 2019/03/12 18:03:06 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/11 22:31:21 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,15 +76,22 @@ void	printdate(time_t rawtime)
 	now = time(NULL);
 	timestr = ctime(&rawtime);
 
-	//ft_putstr(timestr);
 	ft_putstr(dmonth = ft_strsub(timestr, 4, 3));
 	ft_putchar(' ');
 	ft_putstr(dnbr = ft_strsub(timestr, 8, 2));
 	ft_putchar(' ');
 	if ((now - rawtime) > 15780000)
+	{
 		ft_putstr(dyear = ft_strsub(timestr, 19, 5));
+		free(dyear);
+	}
 	else
+	{
 		ft_putstr(dtime = ft_strsub(timestr, 11, 5));
+		free(dtime);
+	}
+	free(dmonth);
+	free(dnbr);
 
 }
 
@@ -177,7 +184,7 @@ void	printgroup(t_dir **start, char *group)
 }
 
 void		calcblocks(t_dir **start)
-{	
+{
 	t_dir	*tmp;
 	int		tblocks;
 
@@ -200,7 +207,7 @@ void	displaylong(t_dir **start)
 	tmp = *start;
 	calcblocks(start);
 	while (tmp != NULL)
-	{	
+	{
 		parsemode(tmp->mode);
 		parseownerright(tmp->mode);
 		printlink(start, tmp->n_link);

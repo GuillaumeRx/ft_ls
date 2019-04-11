@@ -1,28 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   list.c                                             :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/15 15:52:21 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/11 22:24:56 by guroux           ###   ########.fr       */
+/*   Created: 2019/04/11 21:38:32 by guroux            #+#    #+#             */
+/*   Updated: 2019/04/11 21:45:36 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void		freelist(t_dir **node)
+int		throwerror(char *path)
 {
-	if (*node)
-	{
-		freelist(&((*node)->next));
-		free((*node)->name);
-		free((*node)->groupname);
-		free((*node)->ownername);
-		if (S_ISLNK((*node)->mode))
-			free((*node)->rpath);
-		free(*node);
-		node = NULL;
-	}
+	char *str;
+
+	if (!(str = ft_strjoin("ft_ls: ", path)))
+		return (0);
+	perror(str);
+	free(str);
+	return (0);
 }

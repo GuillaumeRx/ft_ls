@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/03/12 17:42:02 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/11 22:08:28 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,18 +54,18 @@ int		getdir(t_dir **head, char *path)
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
 		return (0);
 	if ((lstat(path, &buf)) < 0)
-	{
-		perror(ft_strjoin("ft_ls: ", path));
-		return (0);
-	}
+		return(throwerror(path));
 	if (!(pwd = getpwuid(buf.st_uid)))
-		return (0);
-	node->name = path;
+		node->ownername = ft_itoa(buf.st_uid);
+	else
+		node->ownername = ft_strdup(pwd->pw_name);
+	node->name = ft_strdup(path);
 	node->rawtime = buf.st_mtime;
-	node->ownername = pwd->pw_name;
-	if (!(grp = getgrgid(pwd->pw_gid)))
-		return (0);
-	node->groupname = grp->gr_name;
+	if (!(grp = getgrgid(buf.st_gid)))
+		node->groupname = ft_itoa(buf.st_gid);
+	else
+		node->groupname = ft_strdup(grp->gr_name);
+	node->groupname = ft_strdup(grp->gr_name);
 	node->mode = buf.st_mode;
 	node->n_link = buf.st_nlink;
 	node->size = buf.st_size;
@@ -91,19 +91,20 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 		return (0);
 	if ((lstat(filepath, &buf)) < 0)
 	{
-		perror(ft_strjoin("ft_ls: ", path));
-		return (0);
+		free(filepath);
+		return(throwerror(path));
 	}
 	if (!(pwd = getpwuid(buf.st_uid)))
 		node->ownername = ft_itoa(buf.st_uid);
 	else
-		node->ownername = pwd->pw_name;
-	node->name = dir->d_name;
+		node->ownername = ft_strdup(pwd->pw_name);
+	node->name = ft_strdup(dir->d_name);
 	node->type = dir->d_type;
 	node->rawtime = buf.st_mtime;
 	if (!(grp = getgrgid(buf.st_gid)))
-		return (0);
-	node->groupname = grp->gr_name;
+		node->groupname = ft_itoa(buf.st_gid);
+	else
+		node->groupname = ft_strdup(grp->gr_name);
 	node->mode = buf.st_mode;
 	node->n_link = buf.st_nlink;
 	node->size = buf.st_size;
@@ -114,6 +115,7 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 		node->rpath[readlink(filepath, node->rpath, 99)] = '\0';
 	}
 	node->next = NULL;
+	free(filepath);
 	return (1);
 }
 
@@ -123,7 +125,11 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
 
 	if (!(node = (t_dir *)malloc(sizeof(*node))))
 		return (NULL);
-	adddata(node, dir, path);
+	if (!(adddata(node, dir, path)))
+	{
+		free(node);
+		return (NULL);
+	}
 	if (*start)
 	{
 		node->next = *start;
@@ -151,10 +157,7 @@ int		parsedir(char *path, t_opt *opt)
 	else
 	{
 		if (!(dirp = opendir(path)))
-		{
-			perror(ft_strjoin("ft_ls: ", path));
-			return (0);
-		}
+			return(throwerror(path));
 		while ((dir = readdir(dirp)) != NULL)
 		{
 			if (dir->d_name[0] != '.' || opt->all == 1)
@@ -162,6 +165,7 @@ int		parsedir(char *path, t_opt *opt)
 				if (!(start = dolist(&start, dir, path)))
 				{
 					closedir(dirp);
+					freelist(&start);
 					return (0);
 				}
 			}
@@ -179,6 +183,7 @@ int		parsedir(char *path, t_opt *opt)
 				ft_putstr(fullpath);
 				ft_putendl(" :");
 				parsedir(fullpath, opt);
+				free(fullpath);
 			}
 			tmp = tmp->next;
 		}
