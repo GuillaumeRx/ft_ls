@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 18:49:12 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/11 22:31:21 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/12 20:00:57 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,15 +83,15 @@ void	printdate(time_t rawtime)
 	if ((now - rawtime) > 15780000)
 	{
 		ft_putstr(dyear = ft_strsub(timestr, 19, 5));
-		free(dyear);
+		ft_strdel(&dyear);
 	}
 	else
 	{
 		ft_putstr(dtime = ft_strsub(timestr, 11, 5));
-		free(dtime);
+		ft_strdel(&dtime);
 	}
-	free(dmonth);
-	free(dnbr);
+	ft_strdel(&dmonth);
+	ft_strdel(&dnbr);
 
 }
 

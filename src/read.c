@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/11 23:16:27 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/12 22:32:52 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*editpath(char *actual, char *next)
 			return (NULL);
 		if (!(buf = ft_strjoin(tmp, next)))
 			return (NULL);
-		free(tmp);
+		ft_strdel(&tmp);
 	}
 	else
 	{
@@ -51,6 +51,7 @@ int		getdir(t_dir **head, char *path)
 	struct passwd	*pwd;
 	struct group	*grp;
 	t_dir			*node;
+
 	if (!(node = (t_dir *)malloc(sizeof(t_dir))))
 		return (0);
 	if ((lstat(path, &buf)) < 0)
@@ -75,8 +76,8 @@ int		getdir(t_dir **head, char *path)
 		node->rpath = (char *)malloc(sizeof(char) * 100);
 		node->rpath[readlink(path, node->rpath, 99)] = '\0';
 	}
-	node->next = NULL;
 	(*head) = node;
+	(*head)->next = NULL;
 	return (1);
 }
 
@@ -91,7 +92,7 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 		return (0);
 	if ((lstat(filepath, &buf)) < 0)
 	{
-		free(filepath);
+		ft_strdel(&filepath);
 		return(throwerror(path));
 	}
 	if (!(pwd = getpwuid(buf.st_uid)))
@@ -111,11 +112,10 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 	node->blocks = buf.st_blocks;
 	if (S_ISLNK(buf.st_mode))
 	{
-		node->rpath = (char *)malloc(sizeof(char) * 100);
+		node->rpath = (char *)malloc(sizeof(char) * 40);
 		node->rpath[readlink(filepath, node->rpath, 99)] = '\0';
 	}
-	node->next = NULL;
-	free(filepath);
+	ft_strdel(&filepath);
 	return (1);
 }
 
@@ -128,6 +128,7 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
 	if (!(adddata(node, dir, path)))
 	{
 		free(node);
+		node = NULL;
 		return (NULL);
 	}
 	if (*start)
@@ -135,6 +136,8 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
 		node->next = *start;
 		return (node);
 	}
+	else
+		node->next = NULL;
 	return (node);
 }
 
@@ -146,8 +149,6 @@ int		parsedir(char *path, t_opt *opt)
 	t_dir			*tmp;
 	char			*fullpath;
 
-	dir = NULL;
-	start = NULL;
 	if (checkdir(path) && opt->lst == 1)
 	{
 		if (!(getdir(&start, path)))
@@ -170,6 +171,7 @@ int		parsedir(char *path, t_opt *opt)
 				}
 			}
 		}
+		tmp = start;
 		sortlist(&start, opt);
 		displaycontent(&start, opt);
 		tmp = start;
@@ -183,7 +185,7 @@ int		parsedir(char *path, t_opt *opt)
 				ft_putstr(fullpath);
 				ft_putendl(" :");
 				parsedir(fullpath, opt);
-				free(fullpath);
+				ft_strdel(&fullpath);
 			}
 			tmp = tmp->next;
 		}
