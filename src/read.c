@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/12 22:32:52 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/16 12:06:59 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ int		getdir(t_dir **head, char *path)
 int		adddata(t_dir *node, struct dirent *dir, char *path)
 {
 	struct stat		buf;
-	struct passwd	*pwd;
-	struct group	*grp;
+	struct passwd	*pwd = NULL;
+	struct group	*grp = NULL;
 	char			*filepath;
 
 	if (!(filepath = editpath(path, dir->d_name)))
@@ -95,15 +95,22 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 		ft_strdel(&filepath);
 		return(throwerror(path));
 	}
-	if (!(pwd = getpwuid(buf.st_uid)))
+
+	if ((pwd = getpwuid(buf.st_uid)) != NULL)
+	{
 		node->ownername = ft_itoa(buf.st_uid);
+		errno = ENOENT;
+	}
 	else
 		node->ownername = ft_strdup(pwd->pw_name);
 	node->name = ft_strdup(dir->d_name);
 	node->type = dir->d_type;
 	node->rawtime = buf.st_mtime;
-	if (!(grp = getgrgid(buf.st_gid)))
+	if ((grp = getgrgid(buf.st_gid))!= NULL)
+	{
+		errno = 0;
 		node->groupname = ft_itoa(buf.st_gid);
+	}
 	else
 		node->groupname = ft_strdup(grp->gr_name);
 	node->mode = buf.st_mode;
@@ -116,6 +123,7 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 		node->rpath[readlink(filepath, node->rpath, 99)] = '\0';
 	}
 	ft_strdel(&filepath);
+	node->next = NULL;
 	return (1);
 }
 
@@ -129,6 +137,7 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
 	{
 		free(node);
 		node = NULL;
+		errno = ENOENT;
 		return (NULL);
 	}
 	if (*start)
@@ -137,15 +146,17 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
 		return (node);
 	}
 	else
+	{
 		node->next = NULL;
-	return (node);
+		return (node);
+	}
 }
 
 int		parsedir(char *path, t_opt *opt)
 {
 	DIR				*dirp;
 	struct dirent	*dir;
-	t_dir			*start;
+	t_dir			*start = NULL;
 	t_dir			*tmp;
 	char			*fullpath;
 

@@ -6,69 +6,122 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 18:09:57 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/12 22:28:44 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/16 11:34:57 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-t_dir	*listswitch(t_dir *l1, t_dir *l2)
+int		alpha(t_dir *node1, t_dir *node2)
 {
-	l1->next = l2->next;
-	l2->next = l1;
-	return (l2);
+	return (ft_strcmp(node1->name, node2->name) > 0 ? 1 : 0);
 }
 
-int		alpha(t_dir *node)
+int		lastmod(t_dir *node1, t_dir *node2)
 {
-	return (ft_strcmp(node->name, node->next->name) > 0 ? 1 : 0);
-}
-
-int		lastmod(t_dir *node)
-{
-	if (node->rawtime < node->next->rawtime)
+	if (node1->rawtime < node2->rawtime)
 		return (1);
-	else if (node->rawtime == node->next->rawtime)
-		if (ft_strcmp(node->name, node->next->name) > 0)
+	else if (node1->rawtime == node2->rawtime)
+		if (ft_strcmp(node1->name, node2->name) > 0)
 			return (1);
 	return (0);
 }
 
-t_dir	*ft_sort(t_dir *start, int (*f)(t_dir *))
+t_dir	*sortmerge(t_dir *node1, t_dir *node2, int (*f)(t_dir *, t_dir *))
 {
-	t_dir	*next;
-	t_dir	*act;
-	t_dir	*top;
-	int		changed;
+	t_dir *result = NULL;
 
-	changed = 1;
-	if (!(top = (t_dir *)malloc(sizeof(t_dir))))
-		return (NULL);
-	top->next = start;
-	if (start != NULL && start->next != NULL)
+	if (node1 == NULL)
+		return (node2);
+	else if (node2 == NULL)
+		return (node1);
+	if (f(node1, node2))
 	{
-		while (changed)
+		result = node2;
+		result->next = sortmerge(node1, node2->next, f);
+
+	}
+	else
+	{
+		result = node1;
+		result->next = sortmerge(node1->next, node2, f);
+	}
+	return (result);
+}
+
+void	fbsplit(t_dir *source, t_dir **front, t_dir **back)
+{
+	t_dir	*fast;
+	t_dir	*slow;
+
+	slow = source;
+	fast = source->next;
+	while (fast != NULL)
+	{
+		fast = fast->next;
+		if (fast != NULL)
 		{
-			changed = 0;
-			act = top;
-			next = top->next;
-			while (next->next != NULL)
-			{
-				if (f(next))
-				{
-					act->next = listswitch(next, next->next);
-					changed = 1;
-				}
-				act = next;
-				if (next->next != NULL)
-					next = next->next;
-			}
+			slow = slow->next;
+			fast = fast->next;
 		}
 	}
-	next = top->next;
-	free(top);
-	return (next);
+	*front = source;
+	*back = slow->next;
+	slow->next = NULL;
 }
+
+void	ft_mergesort(t_dir **start, int (*f)(t_dir *, t_dir *))
+{
+		t_dir	*head;
+		t_dir	*node1;
+		t_dir	*node2;
+
+		head = *start;
+		if (head && head->next)
+		{
+			fbsplit(head, &node1, &node2);
+			ft_mergesort(&node1, f);
+			ft_mergesort(&node2, f);
+			*start = sortmerge(node1, node2, f);
+		}
+}
+
+// t_dir	*ft_sort(t_dir *start, int (*f)(t_dir *, t_dir *))
+// {
+// 	t_dir	*next;
+// 	t_dir	*act;
+// 	t_dir	*top;
+// 	int		changed;
+
+// 	changed = 1;
+// 	if (!(top = (t_dir *)malloc(sizeof(t_dir))))
+// 		return (NULL);
+// 	top->next = start;
+// 	if (start != NULL && start->next != NULL)
+// 	{
+// 		while (changed)
+// 		{
+// 			changed = 0;
+// 			act = top;
+// 			next = top->next;
+// 			while (next->next != NULL)
+// 			{
+// 				if (f(next))
+// 				{
+// 					act->next = listswitch(next, next->next);
+// 					changed = 1;
+// 				}
+// 				act = next;
+// 				if (next->next != NULL)
+// 					next = next->next;
+// 			}
+// 		}
+// 	}
+// 	next = top->next;
+// 	free(top);
+// 	top = NULL;
+// 	return (next);
+// }
 
 void revlist(t_dir **start)
 {
@@ -92,9 +145,9 @@ void revlist(t_dir **start)
 void	sortlist(t_dir **start, t_opt *opt)
 {
 	if (opt->tim == 1)
-		*start = ft_sort(*start, &lastmod);
+		ft_mergesort(start, &lastmod);
 	else
-		*start = ft_sort(*start, &alpha);
+		ft_mergesort(start, &alpha);
 	if (opt->rev == 1)
 		revlist(start);
 }
