@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/16 14:55:19 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/16 17:09:28 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,14 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 {
 	struct stat		buf;
 	// struct passwd	*pwd = NULL;
-	// struct group	*grp = NULL;
+	//struct group	*grp = NULL;
 	char			*filepath;
 
 	if (!(filepath = editpath(path, dir->d_name)))
 		return (0);
 	if ((lstat(filepath, &buf)) < 0)
 	{
-		ft_strdel(&filepath);
+		//ft_strdel(&filepath);
 		return(throwerror(path));
 	}
 
@@ -120,9 +120,9 @@ int		adddata(t_dir *node, struct dirent *dir, char *path)
 	if (S_ISLNK(buf.st_mode))
 	{
 		node->rpath = (char *)malloc(sizeof(char) * 40);
-		//node->rpath[readlink(filepath, node->rpath, 99)] = '\0';
+		node->rpath[readlink(filepath, node->rpath, 39)] = '\0';
 	}
-	//ft_strdel(&filepath);
+	ft_strdel(&filepath);
 	node->next = NULL;
 	return (1);
 }
