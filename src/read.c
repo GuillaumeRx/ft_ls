@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 13:09:33 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/16 17:09:28 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/17 18:51:41 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,46 +84,56 @@ int		getdir(t_dir **head, char *path)
 int		adddata(t_dir *node, struct dirent *dir, char *path)
 {
 	struct stat		buf;
-	// struct passwd	*pwd = NULL;
-	//struct group	*grp = NULL;
+	struct passwd	*pwd = NULL;
+	struct group	*grp = NULL;
 	char			*filepath;
 
 	if (!(filepath = editpath(path, dir->d_name)))
-		return (0);
+		return (-1);
 	if ((lstat(filepath, &buf)) < 0)
 	{
-		//ft_strdel(&filepath);
+		ft_strdel(&filepath);
 		return(throwerror(path));
 	}
-
-	// if ((pwd = getpwuid(buf.st_uid)) != NULL)
-	// 	node->ownername = ft_strdup(pwd->pw_name);
-	// else
-	// {
-	// 	node->ownername = ft_itoa(buf.st_uid);
-	// 	errno = ENOENT;
-	// }
-	node->name = ft_strdup(dir->d_name);
 	node->type = dir->d_type;
 	node->rawtime = buf.st_mtime;
-	// if ((grp = getgrgid(buf.st_gid))!= NULL)
-	// 	node->groupname = ft_strdup(grp->gr_name);
-	// else
-	// {
-	// 	errno = 0;
-	// 	node->groupname = ft_itoa(buf.st_gid);
-	// }
 	node->mode = buf.st_mode;
 	node->n_link = buf.st_nlink;
 	node->size = buf.st_size;
 	node->blocks = buf.st_blocks;
-	if (S_ISLNK(buf.st_mode))
+	ft_putendl("plop");
+	if ((pwd = getpwuid(buf.st_uid)) != NULL)
 	{
-		node->rpath = (char *)malloc(sizeof(char) * 40);
-		node->rpath[readlink(filepath, node->rpath, 39)] = '\0';
+		if (!(node->ownername = ft_strdup(pwd->pw_name)))
+			return (-1);
 	}
-	ft_strdel(&filepath);
-	node->next = NULL;
+	else
+	{
+		if (!(node->ownername = ft_itoa(buf.st_uid)))
+			return (-1);
+	}
+	ft_putendl("pas plop");
+	if (!(node->name = ft_strdup(dir->d_name)))
+		return (-1);
+	ft_putendl("plop");
+	if ((grp = getgrgid(buf.st_gid))!= NULL)
+	{
+		if (!(node->groupname = ft_strdup(grp->gr_name)))
+			return (-1);
+	}
+	else
+	{
+		if (!(node->groupname = ft_itoa(buf.st_gid)))
+			return (-1);
+	}
+	ft_putendl("pas plop 2");
+
+	// if (S_ISLNK(buf.st_mode))
+	// {
+	// 	node->rpath = (char *)malloc(sizeof(char) * 40);
+	// 	node->rpath[readlink(filepath, node->rpath, 39)] = '\0';
+	// }
+	//ft_strdel(&filepath);
 	return (1);
 }
 
@@ -175,12 +185,10 @@ int		parsedir(char *path, t_opt *opt)
 				if (!(start = dolist(&start, dir, path)))
 				{
 					closedir(dirp);
-					freelist(start);
 					return (0);
 				}
 			}
 		}
-		tmp = start;
 		sortlist(&start, opt);
 		displaycontent(&start, opt);
 		tmp = start;
@@ -200,6 +208,6 @@ int		parsedir(char *path, t_opt *opt)
 		}
 		closedir(dirp);
 	}
-	freelist(start);
+	freelist(&start);
 	return (1);
 }

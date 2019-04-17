@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/13 18:09:57 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/16 11:34:57 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/17 17:17:57 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,43 +85,6 @@ void	ft_mergesort(t_dir **start, int (*f)(t_dir *, t_dir *))
 			*start = sortmerge(node1, node2, f);
 		}
 }
-
-// t_dir	*ft_sort(t_dir *start, int (*f)(t_dir *, t_dir *))
-// {
-// 	t_dir	*next;
-// 	t_dir	*act;
-// 	t_dir	*top;
-// 	int		changed;
-
-// 	changed = 1;
-// 	if (!(top = (t_dir *)malloc(sizeof(t_dir))))
-// 		return (NULL);
-// 	top->next = start;
-// 	if (start != NULL && start->next != NULL)
-// 	{
-// 		while (changed)
-// 		{
-// 			changed = 0;
-// 			act = top;
-// 			next = top->next;
-// 			while (next->next != NULL)
-// 			{
-// 				if (f(next))
-// 				{
-// 					act->next = listswitch(next, next->next);
-// 					changed = 1;
-// 				}
-// 				act = next;
-// 				if (next->next != NULL)
-// 					next = next->next;
-// 			}
-// 		}
-// 	}
-// 	next = top->next;
-// 	free(top);
-// 	top = NULL;
-// 	return (next);
-// }
 
 void revlist(t_dir **start)
 {
