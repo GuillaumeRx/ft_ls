@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/31 17:49:13 by guroux            #+#    #+#              #
-#    Updated: 2019/04/19 19:33:41 by guroux           ###   ########.fr        #
+#    Updated: 2019/04/23 12:42:00 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@
 NAME = ft_ls
 
 SRC  =	src/main.c \
-		src/read.c \
+		src/read_mod.c \
 		src/display.c	\
 		src/options.c	\
 		src/sort.c		\

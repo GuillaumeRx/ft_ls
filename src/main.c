@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/19 19:30:07 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/23 15:02:42 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,12 @@ int		main(int ac, char **av)
 		}
 		while (i < ac)
 		{
-			parsedir(av[i], opt);
+			dirhandler(av[i], opt);
 			i++;
 		}
 	}
 	else
-		parsedir(".", opt);
+		dirhandler(".", opt);
 	free(opt);
 	return (1);
 }
