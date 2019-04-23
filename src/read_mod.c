@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 14:08:08 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/23 16:10:12 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/23 17:40:57 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int		adddata(t_dir *node, char *path)
 	node->n_link = buf.st_nlink;
 	node->size = buf.st_size;
 	node->blocks = buf.st_blocks;
+	node->rdev = buf.st_rdev;
 	if (!(node->ownername = getowner(buf.st_uid)))
 		return (0);
 	if (!(node->groupname = getgroup(buf.st_gid)))

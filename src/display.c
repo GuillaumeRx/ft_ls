@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/07 18:49:12 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/12 20:00:57 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/23 18:29:44 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,26 +117,47 @@ void	printlink(t_dir **start, nlink_t n_link)
 	ft_putnbr(n_link);
 }
 
-void	printsize(t_dir **start, off_t size)
+void	printsize(t_dir *act, int size)
 {
-	t_dir	*tmp;
-	int		longer;
+	int	minor;
+	int major;
+	int i;
 
-	tmp = *start;
-	longer = 0;
-	while (tmp != NULL)
+	if (S_ISCHR(act->mode) || S_ISBLK(act->mode))
 	{
-		if (longer < ft_count(tmp->size))
-			longer = ft_count(tmp->size);
-		tmp = tmp->next;
+		minor = minor(act->rdev);
+		major = major(act->rdev);
+		i = size - 8;
+		while (i > 0)
+		{
+			ft_putchar(' ');
+			i--;
+		}
+		i = 3 - ft_count(major);
+		while (i > 0)
+		{
+			ft_putchar(' ');
+			i--;
+		}
+		ft_putnbr(major);
+		ft_putstr(", ");
+		i = 3 - ft_count(minor);
+		while (i > 0)
+		{
+			ft_putchar(' ');
+			i--;
+		}
+		ft_putnbr(minor);
 	}
-	ft_putchar(' ');
-	while (longer - ft_count(size) >= 0)
+	else
 	{
-		ft_putchar(' ');
-		longer--;
+		while (size - ft_count(act->size))
+		{
+			ft_putchar(' ');
+			size--;
+		}
+		ft_putnbr(act->size);
 	}
-	ft_putnbr(size);
 }
 
 void	printowner(t_dir **start, char *owner)
@@ -183,6 +204,30 @@ void	printgroup(t_dir **start, char *group)
 	}
 }
 
+int			calcpadding(t_dir **start)
+{
+	t_dir	*tmp;
+	int		longer;
+
+	tmp = *start;
+	longer = 0;
+	while (tmp != NULL)
+	{
+		if (S_ISCHR(tmp->mode) || S_ISBLK(tmp->mode))
+		{
+			if (longer < 8)
+				longer = 8;
+		}
+		else
+		{
+			if (longer < ft_count(tmp->size))
+				longer = ft_count(tmp->size);
+		}
+		tmp = tmp->next;
+	}
+	return (longer);
+}
+
 void		calcblocks(t_dir **start)
 {
 	t_dir	*tmp;
@@ -214,7 +259,8 @@ void	displaylong(t_dir **start)
 		printowner(start, tmp->ownername);
 		ft_putchar(' ');
 		printgroup(start, tmp->groupname);
-		printsize(start, tmp->size);
+		ft_putstr("  ");
+		printsize(tmp, calcpadding(start));
 		ft_putchar(' ');
 		printdate(tmp->rawtime);
 		ft_putchar(' ');

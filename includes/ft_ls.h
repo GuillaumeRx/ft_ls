@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/23 15:23:44 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/23 17:43:53 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct		s_dir
 	off_t			size;
 	time_t			rawtime;
 	quad_t			blocks;
+	dev_t			rdev;
 	struct s_dir	*next;
 }					t_dir;
 
