@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/31 17:49:13 by guroux            #+#    #+#              #
-#    Updated: 2019/04/23 12:42:00 by guroux           ###   ########.fr        #
+#    Updated: 2019/04/24 14:35:48 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,16 +15,20 @@
 NAME = ft_ls
 
 SRC  =	src/main.c \
-		src/read_mod.c \
-		src/display.c	\
-		src/options.c	\
-		src/sort.c		\
-		src/list.c		\
-		src/error.c		\
+		src/read.c \
+		src/long_read.c \
+		src/display.c \
+		src/display_long.c \
+		src/long.c \
+		src/misc.c \
+		src/options.c \
+		src/sort.c \
+		src/list.c \
+		src/error.c \
 
 OBJECT = $(SRC:.c=.o)
 
-HEADERS =	./includes	\
+HEADERS =	./includes
 
 LIB = libft
 

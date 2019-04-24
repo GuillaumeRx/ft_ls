@@ -1,40 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   options.c                                          :+:      :+:    :+:   */
+/*   long_read.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/02/11 21:50:38 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/24 14:15:00 by guroux           ###   ########.fr       */
+/*   Created: 2019/04/24 14:18:46 by guroux            #+#    #+#             */
+/*   Updated: 2019/04/24 14:50:52 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int		setopt(char *entry, t_opt *opt)
+char	*getgroup(gid_t gid)
 {
-	int i;
+	struct group	*ptr;
+	char			*tmp;
 
-	i = 1;
-	opt->rec = 0;
-	opt->lst = 0;
-	opt->all = 0;
-	opt->rev = 0;
-	opt->tim = 0;
-	while (entry[i] != '\0')
-	{
-		if (entry[i] == 'R')
-			opt->rec = 1;
-		else if (entry[i] == 'l')
-			opt->lst = 1;
-		else if (entry[i] == 'a')
-			opt->all = 1;
-		else if (entry[i] == 'r')
-			opt->rev = 1;
-		else if (entry[i] == 't')
-			opt->tim = 1;
-		i++;
-	}
-	return (1);
+	tmp = NULL;
+	ptr = getgrgid(gid);
+	if (ptr)
+		tmp = cpystr(ptr->gr_name);
+	else
+		tmp = ft_itoa(gid);
+	if (tmp)
+		return (tmp);
+	else
+		return (NULL);
+}
+
+char	*getowner(uid_t uid)
+{
+	struct passwd	*ptr;
+	char			*tmp;
+
+	tmp = NULL;
+	ptr = getpwuid(uid);
+	if (ptr)
+		tmp = cpystr(ptr->pw_name);
+	else
+		tmp = ft_itoa(uid);
+	if (tmp)
+		return (tmp);
+	else
+		return (NULL);
 }
