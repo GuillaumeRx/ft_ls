@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 14:08:08 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/24 17:05:02 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 22:50:53 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int		adddata(t_dir *node, char *path)
 t_dir	*dolist(t_dir **start, struct dirent *dir, char *path, t_opt *opt)
 {
 	t_dir	*node;
-	char	*filepath;
 
 	if (!(node = (t_dir *)malloc(sizeof(*node))))
 		return (NULL);
@@ -50,30 +49,18 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path, t_opt *opt)
 	node->type = dir->d_type;
 	if (opt->lst == 1)
 	{
-		if (!(filepath = editpath(path, dir->d_name)))
+		if (!(dolong(node, path, dir)))
 		{
-			ft_strdel(&node->name);
+			ft_strdel(&(node->name));
 			free(node);
 			return (NULL);
 		}
-		if (!(adddata(node, filepath)))
-		{
-			ft_strdel(&node->name);
-			free(node);
-			return (NULL);
-		}
-		ft_strdel(&filepath);
 	}
 	if (*start)
-	{
 		node->next = *start;
-		return (node);
-	}
 	else
-	{
 		node->next = NULL;
-		return (node);
-	}
+	return (node);
 }
 
 t_dir	*parsedir(char *path, t_opt *opt)
@@ -126,13 +113,10 @@ t_dir	*parselink(char *path)
 int		dirhandler(char *path, t_opt *opt)
 {
 	t_dir	*start;
-	t_dir	*tmp;
-	char	*dirpath;
 
 	start = NULL;
-	if (checkdir(path) && opt->lst == 1)
+	if (checkdir(path, opt))
 	{
-		ft_putendl("plop");
 		if (!(start = parselink(path)))
 			return (0);
 		displaycontent(&start, opt);
@@ -143,22 +127,7 @@ int		dirhandler(char *path, t_opt *opt)
 		return (0);
 	sortlist(&start, opt);
 	displaycontent(&start, opt);
-	tmp = start;
-	while (tmp != NULL && opt->rec == 1)
-	{
-		if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0
-		&& ft_strcmp(tmp->name, "..") != 0))
-		{
-			if (!(dirpath = editpath(path, tmp->name)))
-				return (0);
-			ft_putchar('\n');
-			ft_putstr(dirpath);
-			ft_putendl(" :");
-			dirhandler(dirpath, opt);
-			ft_strdel(&dirpath);
-		}
-		tmp = tmp->next;
-	}
+	recdir(&start, path, opt);
 	freelist(&start, opt);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/25 17:51:42 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 22:53:00 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct		s_opt
 */
 
 int					dirhandler(char *path, t_opt *opt);
+int					adddata(t_dir *node, char *path);
 
 /*
 ** long_read.c
@@ -63,6 +64,8 @@ int					dirhandler(char *path, t_opt *opt);
 
 char				*getgroup(gid_t gid);
 char				*getowner(uid_t uid);
+int					dolong(t_dir *node, char *path, struct dirent *dir);
+int					recdir(t_dir **start, char *path, t_opt *opt);
 
 /*
 ** misc.c
@@ -71,7 +74,7 @@ char				*getowner(uid_t uid);
 int					alpha(t_dir *node1, t_dir *node2);
 int					lastmod(t_dir *node1, t_dir *node2);
 char				*cpystr(char *src);
-int					checkdir(char *path);
+int					checkdir(char *path, t_opt *opt);
 char				*editpath(char *actual, char *next);
 
 /*
@@ -89,16 +92,16 @@ void				parsemode(mode_t mode);
 */
 
 void				displaylong(t_dir **start);
+void				printminmaj(int size, int minor, int major);
 
 /*
-** long.c
+** display_long_2.c
 */
 
 void				calcblocks(t_dir **start);
 void				printsize(t_dir *act, int size);
 int					calcpadding(t_dir **start);
 void				printlink(t_dir **start, nlink_t n_link);
-void				parseownerright(mode_t mode);
 
 /*
 ** sort.c
@@ -110,7 +113,7 @@ void				sortlist(t_dir **start, t_opt *opt);
 ** options.c
 */
 
-int					setopt(char entry, t_opt *opt);
+int					parseopt(char *str, t_opt *opt);
 
 /*
 ** list.c
@@ -123,5 +126,6 @@ void				freelist(t_dir **lst, t_opt *opt);
 */
 
 int					throwerror(char *path);
+void				usage(char opt);
 
 #endif

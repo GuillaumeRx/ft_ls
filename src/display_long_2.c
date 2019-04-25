@@ -1,52 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   long.c                                             :+:      :+:    :+:   */
+/*   display_long_2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/24 14:08:40 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/24 17:04:22 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 22:41:01 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
-
-void	parseownerright(mode_t mode)
-{
-	ft_putchar((mode & S_IRUSR) ? 'r' : '-');
-	ft_putchar((mode & S_IWUSR) ? 'w' : '-');
-	if (!(mode & S_IXUSR) && (mode & S_ISUID))
-		ft_putchar('S');
-	else if ((mode & S_IXUSR) && (mode & S_ISUID))
-		ft_putchar('s');
-	else if (mode & S_IXUSR)
-		ft_putchar('x');
-	else
-		ft_putchar('-');
-	ft_putchar((mode & S_IRGRP) ? 'r' : '-');
-	ft_putchar((mode & S_IWGRP) ? 'w' : '-');
-	if (!(mode & S_IXGRP) && (mode & S_ISGID))
-		ft_putchar('S');
-	else if ((mode & S_IXGRP) && (mode & S_ISGID))
-		ft_putchar('s');
-	else if (mode & S_IXGRP)
-		ft_putchar('x');
-	else
-		ft_putchar('-');
-	ft_putchar((mode & S_IROTH) ? 'r' : '-');
-	ft_putchar((mode & S_IWOTH) ? 'w' : '-');
-	if (S_ISDIR(mode) && !(mode & S_IXUSR) && !(mode & S_IXGRP)
-	&& (mode & S_ISVTX))
-		ft_putchar('T');
-	else if (S_ISDIR(mode) && (mode & S_IXUSR) && (mode & S_IXGRP)
-	&& (mode & S_ISVTX))
-		ft_putchar('t');
-	else if (mode & S_IXOTH)
-		ft_putchar('x');
-	else
-		ft_putchar('-');
-}
 
 void	printlink(t_dir **start, nlink_t n_link)
 {
@@ -72,36 +36,13 @@ void	printlink(t_dir **start, nlink_t n_link)
 
 void	printsize(t_dir *act, int size)
 {
-	int	minor;
-	int major;
-	int i;
+	int		minor;
+	int		major;
 
+	minor = minor(act->rdev);
+	major = major(act->rdev);
 	if (S_ISCHR(act->mode) || S_ISBLK(act->mode))
-	{
-		minor = minor(act->rdev);
-		major = major(act->rdev);
-		i = size - 8;
-		while (i > 0)
-		{
-			ft_putchar(' ');
-			i--;
-		}
-		i = 3 - ft_count(major);
-		while (i > 0)
-		{
-			ft_putchar(' ');
-			i--;
-		}
-		ft_putnbr(major);
-		ft_putstr(", ");
-		i = 3 - ft_count(minor);
-		while (i > 0)
-		{
-			ft_putchar(' ');
-			i--;
-		}
-		ft_putnbr(minor);
-	}
+		printminmaj(size, minor, major);
 	else
 	{
 		while (size - ft_count(act->size))
@@ -141,15 +82,21 @@ void	calcblocks(t_dir **start)
 {
 	t_dir	*tmp;
 	int		tblocks;
+	int		i;
 
 	tmp = *start;
 	tblocks = 0;
+	i = 0;
 	while (tmp != NULL)
 	{
+		i++;
 		tblocks += tmp->blocks;
 		tmp = tmp->next;
 	}
-	ft_putstr("total ");
-	ft_putnbr(tblocks);
-	ft_putchar('\n');
+	if (i > 0)
+	{
+		ft_putstr("total ");
+		ft_putnbr(tblocks);
+		ft_putchar('\n');
+	}
 }

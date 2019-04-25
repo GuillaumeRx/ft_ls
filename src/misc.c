@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/24 14:16:28 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/24 14:52:30 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 22:52:46 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,15 @@ char	*cpystr(char *src)
 	return (dst);
 }
 
-int		checkdir(char *path)
+int		checkdir(char *path, t_opt *opt)
 {
 	struct stat		buf;
 
 	if ((lstat(path, &buf)) < 0)
 		return (0);
-	if (S_ISLNK(buf.st_mode))
+	if (S_ISLNK(buf.st_mode) && opt->lst == 1)
+		return (1);
+	else if (S_ISREG(buf.st_mode))
 		return (1);
 	return (0);
 }

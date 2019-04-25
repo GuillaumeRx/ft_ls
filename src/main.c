@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/25 18:18:14 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 22:14:11 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,21 @@
 void	reverseparse(int i, int ac, char **av, t_opt *opt)
 {
 	int		j;
+	int		printname;
 
+	printname = 0;
 	j = ac - 1;
+	if (j != i)
+		printname = 1;
 	while (j >= i)
 	{
+		if (j != ac - 1)
+			ft_putchar('\n');
+		if (printname)
+		{
+			ft_putstr(av[j]);
+			ft_putendl(" :");
+		}
 		dirhandler(av[j], opt);
 		j--;
 	}
@@ -35,18 +46,10 @@ int		main(int ac, char **av)
 	opt = (t_opt *)malloc(sizeof(t_opt));
 	if (ac > 1)
 	{
-		if (i < ac && av[i][0] == '-')
+		while (i < ac && av[i][0] == '-')
 		{
-			while (av[i][j] && (setopt(av[i][j], opt)))
-				j++;
-			if (av[i][j] && av[i][1] != '-')
-			{
-				ft_putstr_fd("ft_ls: illegal option -- ", 2);
-				ft_putchar_fd(av[i][j], 2);
-				ft_putchar('\n');
+			if (!(parseopt(av[i], opt)))
 				return (0);
-			}
-			j = 1;
 			i++;
 		}
 		if (av[i])

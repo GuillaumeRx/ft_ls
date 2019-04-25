@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/31 17:49:13 by guroux            #+#    #+#              #
-#    Updated: 2019/04/24 14:35:48 by guroux           ###   ########.fr        #
+#    Updated: 2019/04/25 22:40:37 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRC  =	src/main.c \
 		src/long_read.c \
 		src/display.c \
 		src/display_long.c \
-		src/long.c \
+		src/display_long_2.c \
 		src/misc.c \
 		src/options.c \
 		src/sort.c \
