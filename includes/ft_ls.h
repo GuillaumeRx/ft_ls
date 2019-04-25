@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/24 14:41:06 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 17:51:42 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ void				sortlist(t_dir **start, t_opt *opt);
 ** options.c
 */
 
-int					setopt(char *entry, t_opt *opt);
+int					setopt(char entry, t_opt *opt);
 
 /*
 ** list.c

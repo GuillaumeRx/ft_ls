@@ -6,41 +6,53 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/23 15:02:42 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/25 18:18:14 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
+void	reverseparse(int i, int ac, char **av, t_opt *opt)
+{
+	int		j;
+
+	j = ac - 1;
+	while (j >= i)
+	{
+		dirhandler(av[j], opt);
+		j--;
+	}
+}
+
 int		main(int ac, char **av)
 {
 	t_opt	*opt;
 	int		i;
+	int		j;
 
 	i = 1;
+	j = 1;
 	opt = (t_opt *)malloc(sizeof(t_opt));
 	if (ac > 1)
 	{
-		while (i < ac)
+		if (i < ac && av[i][0] == '-')
 		{
-			if (av[i][0] == '-' && av[i][1] != '-')
+			while (av[i][j] && (setopt(av[i][j], opt)))
+				j++;
+			if (av[i][j] && av[i][1] != '-')
 			{
-				if (setopt(av[i], opt))
-					i++;
-				else
-				{
-					ft_putendl("Illegal option");
-					return (0);
-				}
+				ft_putstr_fd("ft_ls: illegal option -- ", 2);
+				ft_putchar_fd(av[i][j], 2);
+				ft_putchar('\n');
+				return (0);
 			}
-			else
-				break ;
-		}
-		while (i < ac)
-		{
-			dirhandler(av[i], opt);
+			j = 1;
 			i++;
 		}
+		if (av[i])
+			reverseparse(i, ac, av, opt);
+		else
+			dirhandler(".", opt);
 	}
 	else
 		dirhandler(".", opt);
