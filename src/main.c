@@ -6,11 +6,33 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/25 22:14:11 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/26 17:36:39 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+void	sortargs(int i, int ac, char **av)
+{
+	char *tmp;
+	int	j;
+
+	j = i;
+	if (i - ac > 1)
+	{
+		while(j < ac - 2)
+		{
+			if (strcmp(av[j], av[j + 1]) > 0)
+			{
+				tmp = av[j];
+				av[j] = av[j + 1];
+				av[j + 1] = tmp;
+				j = i;
+			}
+			j++;
+		}
+	}
+}
 
 void	reverseparse(int i, int ac, char **av, t_opt *opt)
 {
@@ -19,8 +41,10 @@ void	reverseparse(int i, int ac, char **av, t_opt *opt)
 
 	printname = 0;
 	j = ac - 1;
+
 	if (j != i)
 		printname = 1;
+	sortargs(i, ac, av);
 	while (j >= i)
 	{
 		if (j != ac - 1)
