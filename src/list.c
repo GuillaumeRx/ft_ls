@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/15 15:52:21 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/23 15:37:58 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/29 19:31:05 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void		freelist(t_dir **lst, t_opt *opt)
 	{
 		freelist(&((*lst)->next), opt);
 		ft_strdel(&((*lst)->name));
-		if (opt->lst)
+		if (opt->lst == 1 || opt->tim == 1)
 		{
 			ft_strdel(&((*lst)->groupname));
 			ft_strdel(&((*lst)->ownername));
