@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/26 17:36:39 by guroux           ###   ########.fr       */
+/*   Updated: 2019/04/29 18:11:13 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,37 @@
 
 void	sortargs(int i, int ac, char **av)
 {
-	char *tmp;
-	int	j;
+	int			j;
+	char		*tmp;
 
 	j = i;
-	if (i - ac > 1)
+	while (j < (ac - 1))
 	{
-		while(j < ac - 2)
+		if (ft_strcmp(av[j], av[j + 1]) > 0)
 		{
-			if (strcmp(av[j], av[j + 1]) > 0)
-			{
-				tmp = av[j];
-				av[j] = av[j + 1];
-				av[j + 1] = tmp;
-				j = i;
-			}
-			j++;
+			tmp = av[j];
+			av[j] = av[j + 1];
+			av[j + 1] = tmp;
+			j = i;
 		}
+		else
+			j++;
 	}
 }
 
-void	reverseparse(int i, int ac, char **av, t_opt *opt)
+void	parsedirname(int i, int ac, char **av, t_opt *opt)
 {
-	int		j;
-	int		printname;
+	int j;
+	int	printname;
 
+	j = i;
 	printname = 0;
-	j = ac - 1;
-
-	if (j != i)
-		printname = 1;
 	sortargs(i, ac, av);
-	while (j >= i)
+	if (i != (ac - 1))
+		printname = 1;
+	while (j < ac)
 	{
-		if (j != ac - 1)
+		if (j != i)
 			ft_putchar('\n');
 		if (printname)
 		{
@@ -55,32 +52,40 @@ void	reverseparse(int i, int ac, char **av, t_opt *opt)
 			ft_putendl(" :");
 		}
 		dirhandler(av[j], opt);
-		j--;
+		j++;
 	}
+}
+
+int		handleargs(int ac, char **av, t_opt *opt)
+{
+	int i;
+
+	i = 1;
+	while (i < ac && av[i][0] == '-')
+	{
+		if (!(parseopt(av[i], opt)))
+			return (0);
+		i++;
+	}
+	if (av[i])
+		parsedirname(i, ac, av, opt);
+	else
+		dirhandler(".", opt);
+	return (1);
 }
 
 int		main(int ac, char **av)
 {
 	t_opt	*opt;
-	int		i;
-	int		j;
 
-	i = 1;
-	j = 1;
 	opt = (t_opt *)malloc(sizeof(t_opt));
+	opt->all = 0;
+	opt->lst = 0;
+	opt->rec = 0;
+	opt->rev = 0;
+	opt->tim = 0;
 	if (ac > 1)
-	{
-		while (i < ac && av[i][0] == '-')
-		{
-			if (!(parseopt(av[i], opt)))
-				return (0);
-			i++;
-		}
-		if (av[i])
-			reverseparse(i, ac, av, opt);
-		else
-			dirhandler(".", opt);
-	}
+		handleargs(ac, av, opt);
 	else
 		dirhandler(".", opt);
 	free(opt);
