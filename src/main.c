@@ -6,21 +6,36 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/29 18:11:13 by guroux           ###   ########.fr       */
+/*   Updated: 2019/05/13 16:13:24 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	sortargs(int i, int ac, char **av)
+int timesort(const char *param1, const char *param2)
 {
-	int			j;
-	char		*tmp;
+	struct stat pstat1;
+	struct stat pstat2;
+
+	if (lstat(param1, &pstat1) < 0)
+		return (0);
+	if (lstat(param2, &pstat2) < 0)
+		return (1);
+	if (pstat1.st_mtimespec.tv_sec < pstat2.st_mtimespec.tv_sec)
+		return (1);
+	else
+		return (0);
+}
+
+void sortargs(int i, int ac, char **av, int (*f)(const char *, const char *))
+{
+	int j;
+	char *tmp;
 
 	j = i;
 	while (j < (ac - 1))
 	{
-		if (ft_strcmp(av[j], av[j + 1]) > 0)
+		if (f(av[j], av[j + 1]) > 0)
 		{
 			tmp = av[j];
 			av[j] = av[j + 1];
@@ -32,14 +47,17 @@ void	sortargs(int i, int ac, char **av)
 	}
 }
 
-void	parsedirname(int i, int ac, char **av, t_opt *opt)
+void parsedirname(int i, int ac, char **av, t_opt *opt)
 {
 	int j;
-	int	printname;
+	int printname;
 
 	j = i;
 	printname = 0;
-	sortargs(i, ac, av);
+	if (opt->tim == 1)
+		sortargs(i, ac, av, &timesort);
+	else
+		sortargs(i, ac, av, &ft_strcmp);
 	if (i != (ac - 1))
 		printname = 1;
 	while (j < ac)
@@ -56,13 +74,18 @@ void	parsedirname(int i, int ac, char **av, t_opt *opt)
 	}
 }
 
-int		handleargs(int ac, char **av, t_opt *opt)
+int handleargs(int ac, char **av, t_opt *opt)
 {
 	int i;
 
 	i = 1;
 	while (i < ac && av[i][0] == '-')
 	{
+		if (av[i][1] == '-')
+		{
+			i++;
+			break;
+		}
 		if (!(parseopt(av[i], opt)))
 			return (0);
 		i++;
@@ -74,11 +97,12 @@ int		handleargs(int ac, char **av, t_opt *opt)
 	return (1);
 }
 
-int		main(int ac, char **av)
+int main(int ac, char **av)
 {
-	t_opt	*opt;
+	t_opt *opt;
 
-	opt = (t_opt *)malloc(sizeof(t_opt));
+	if (!(opt = (t_opt *)malloc(sizeof(t_opt))))
+		return (0);
 	opt->all = 0;
 	opt->lst = 0;
 	opt->rec = 0;
