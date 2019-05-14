@@ -6,13 +6,13 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/05/13 16:13:24 by guroux           ###   ########.fr       */
+/*   Updated: 2019/05/14 16:33:23 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int timesort(const char *param1, const char *param2)
+int		timesort(const char *param1, const char *param2)
 {
 	struct stat pstat1;
 	struct stat pstat2;
@@ -27,10 +27,10 @@ int timesort(const char *param1, const char *param2)
 		return (0);
 }
 
-void sortargs(int i, int ac, char **av, int (*f)(const char *, const char *))
+void	sortargs(int i, int ac, char **av, int (*f)(const char *, const char *))
 {
-	int j;
-	char *tmp;
+	int		j;
+	char	*tmp;
 
 	j = i;
 	while (j < (ac - 1))
@@ -47,7 +47,7 @@ void sortargs(int i, int ac, char **av, int (*f)(const char *, const char *))
 	}
 }
 
-void parsedirname(int i, int ac, char **av, t_opt *opt)
+void	parsedirname(int i, int ac, char **av, t_opt *opt)
 {
 	int j;
 	int printname;
@@ -74,7 +74,7 @@ void parsedirname(int i, int ac, char **av, t_opt *opt)
 	}
 }
 
-int handleargs(int ac, char **av, t_opt *opt)
+int		handleargs(int ac, char **av, t_opt *opt)
 {
 	int i;
 
@@ -84,7 +84,7 @@ int handleargs(int ac, char **av, t_opt *opt)
 		if (av[i][1] == '-')
 		{
 			i++;
-			break;
+			break ;
 		}
 		if (!(parseopt(av[i], opt)))
 			return (0);
@@ -97,7 +97,7 @@ int handleargs(int ac, char **av, t_opt *opt)
 	return (1);
 }
 
-int main(int ac, char **av)
+int		main(int ac, char **av)
 {
 	t_opt *opt;
 
