@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/24 14:18:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/25 22:48:26 by guroux           ###   ########.fr       */
+/*   Updated: 2019/05/15 16:54:49 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int		recdir(t_dir **start, char *path, t_opt *opt)
 	tmp = *start;
 	while (tmp != NULL && opt->rec == 1)
 	{
-		if ((tmp->type == DT_DIR) && (ft_strcmp(tmp->name, ".") != 0
+		if ((S_ISDIR(tmp->mode)) && (ft_strcmp(tmp->name, ".") != 0
 		&& ft_strcmp(tmp->name, "..") != 0))
 		{
 			if (!(dirpath = editpath(path, tmp->name)))

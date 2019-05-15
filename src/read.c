@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/04/23 14:08:08 by guroux            #+#    #+#             */
-/*   Updated: 2019/05/08 16:36:42 by guroux           ###   ########.fr       */
+/*   Updated: 2019/05/15 16:55:47 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int		adddata(t_dir *node, char *path)
 	return (1);
 }
 
-t_dir	*dolist(t_dir **start, struct dirent *dir, char *path, t_opt *opt)
+t_dir	*dolist(t_dir **start, struct dirent *dir, char *path)
 {
 	t_dir	*node;
 
@@ -47,14 +47,11 @@ t_dir	*dolist(t_dir **start, struct dirent *dir, char *path, t_opt *opt)
 	if (!(node->name = cpystr(dir->d_name)))
 		return (0);
 	node->type = dir->d_type;
-	if (opt->lst == 1 || opt->tim == 1)
+	if (!(dolong(node, path, dir)))
 	{
-		if (!(dolong(node, path, dir)))
-		{
-			ft_strdel(&(node->name));
-			free(node);
-			return (NULL);
-		}
+		ft_strdel(&(node->name));
+		free(node);
+		return (NULL);
 	}
 	if (*start)
 		node->next = *start;
@@ -79,7 +76,7 @@ t_dir	*parsedir(char *path, t_opt *opt)
 	{
 		if (dir->d_name[0] != '.' || opt->all == 1)
 		{
-			if (!(lst = dolist(&lst, dir, path, opt)))
+			if (!(lst = dolist(&lst, dir, path)))
 			{
 				closedir(dirp);
 				return (NULL);
