@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 18:12:35 by guroux            #+#    #+#             */
-/*   Updated: 2019/04/25 22:53:00 by guroux           ###   ########.fr       */
+/*   Updated: 2019/06/21 16:30:49 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,13 @@ int					parseopt(char *str, t_opt *opt);
 */
 
 void				freelist(t_dir **lst, t_opt *opt);
+
+/*
+** dir_parsing.c
+*/
+
+void				reverseparse(int i, int ac, char **av, t_opt *opt);
+void				simpleparse(int i, int ac, char **av, t_opt *opt);
 
 /*
 ** error.c

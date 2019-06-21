@@ -6,7 +6,7 @@
 /*   By: guroux <guroux@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/31 20:44:46 by guroux            #+#    #+#             */
-/*   Updated: 2019/05/14 16:33:23 by guroux           ###   ########.fr       */
+/*   Updated: 2019/06/21 16:30:39 by guroux           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,18 +60,10 @@ void	parsedirname(int i, int ac, char **av, t_opt *opt)
 		sortargs(i, ac, av, &ft_strcmp);
 	if (i != (ac - 1))
 		printname = 1;
-	while (j < ac)
-	{
-		if (j != i)
-			ft_putchar('\n');
-		if (printname)
-		{
-			ft_putstr(av[j]);
-			ft_putendl(" :");
-		}
-		dirhandler(av[j], opt);
-		j++;
-	}
+	if (opt->rev)
+		reverseparse(i, ac, av, opt);
+	else
+		simpleparse(i, ac, av, opt);
 }
 
 int		handleargs(int ac, char **av, t_opt *opt)

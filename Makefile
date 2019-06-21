@@ -6,7 +6,7 @@
 #    By: guroux <guroux@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/31 17:49:13 by guroux            #+#    #+#              #
-#    Updated: 2019/04/25 22:40:37 by guroux           ###   ########.fr        #
+#    Updated: 2019/06/21 16:32:59 by guroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRC  =	src/main.c \
 		src/sort.c \
 		src/list.c \
 		src/error.c \
+		src/dir_parsing.c \
 
 OBJECT = $(SRC:.c=.o)
 
@@ -34,7 +35,7 @@ LIB = libft
 
 CC = gcc
 
-FLAGS = -Wall -Wextra -Werror -g
+FLAGS = -Wall -Wextra -Werror
 
 GREEN = \033[0;32m
 WHITE = \033[1;37m
@@ -46,7 +47,7 @@ OKGREEN = $(YELLOW) $(GREEN)[OK]$(WHITE)
 KORED = $(YELLOW) $(RED)[error]$(WHITE)
 
 
-$(NAME): logo sign $(LIB) $(OBJECT)
+$(NAME): logo $(LIB) $(OBJECT)
 	@$(CC) $(FLAGS) -o $(NAME) $(OBJECT) -L libft/ -lft && echo "$(BLUE)Compilation$(OKGREEN)" || (echo "$(BLUE)Compilation$(KORED)" && false)
 
 $(LIB):
@@ -65,15 +66,6 @@ logo:
 	@echo "                 ██╔══╝     ██║       ██║     ╚════██║"
 	@echo "                 ██║        ██║       ███████╗███████║"
 	@echo "                 ╚═╝        ╚═╝       ╚══════╝╚══════╝"
-	@echo
-
-sign:
-	@echo "██████╗ ██╗   ██╗     ██████╗ ██╗   ██╗██████╗  ██████╗ ██╗   ██╗██╗  ██╗"
-	@echo "██╔══██╗╚██╗ ██╔╝    ██╔════╝ ██║   ██║██╔══██╗██╔═══██╗██║   ██║╚██╗██╔╝"
-	@echo "██████╔╝ ╚████╔╝     ██║  ███╗██║   ██║██████╔╝██║   ██║██║   ██║ ╚███╔╝ "
-	@echo "██╔══██╗  ╚██╔╝      ██║   ██║██║   ██║██╔══██╗██║   ██║██║   ██║ ██╔██╗ "
-	@echo "██████╔╝   ██║       ╚██████╔╝╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██╔╝ ██╗"
-	@echo "╚═════╝    ╚═╝        ╚═════╝  ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═╝"
 	@echo
 	@echo "$(BLUE)Compilation...\n"
 
